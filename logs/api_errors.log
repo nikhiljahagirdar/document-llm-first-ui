@@ -3,3 +3,5 @@
 [2026-05-13T11:59:44.945Z] POST /api/users/login | Status: 401 | Error: Incorrect email or password
 [2026-05-13T12:01:10.206Z] POST /api/users/login | Status: 401 | Error: Incorrect email or password
 [2026-05-13T12:01:56.218Z] POST /api/users/login | Status: 401 | Error: Incorrect email or password
+[2026-05-15T16:07:24.454Z] GET /api/documents/b9bbeec3-1f31-4fa0-91ce-e675a46a3128/content?page=1&page_size=200 | Status: 404 | Error: No content
+[2026-05-15T16:07:23.034Z] GET /api/documents/b9bbeec3-1f31-4fa0-91ce-e675a46a3128/content?page=1&page_size=200 | Status: 404 | Error: No content

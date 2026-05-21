@@ -203,9 +203,9 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <Card className="flex-1 flex flex-col rounded-xl border-none shadow-xl shadow-slate-200/50 dark:shadow-none bg-card overflow-hidden relative group">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-50/50 dark:to-slate-950/20 pointer-events-none" />
-        
+      <Card className="flex-1 flex flex-col rounded-xl border-none shadow-xl shadow-primary/5 dark:shadow-none glass-card overflow-hidden relative group">
+        <div className="absolute inset-0 mesh-gradient opacity-50 pointer-events-none" />
+        <div className="absolute inset-0 noise" />
         <CardContent className="flex-1 p-0 flex flex-col overflow-hidden relative z-10">
           <ScrollArea className="flex-1 px-2 md:px-4 py-4 md:py-6">
             {messages.length === 0 ? (
@@ -246,10 +246,10 @@ export default function ChatPage() {
                       )}
 
                       <div className={cn(
-                        "relative px-4 py-3 md:px-5 md:py-3.5 rounded-2xl text-sm font-medium leading-relaxed shadow-sm",
+                        "relative px-4 py-3 md:px-5 md:py-3.5 rounded-2xl text-sm font-medium leading-relaxed shadow-sm transition-all duration-300",
                         msg.role === "user" 
-                          ? "bg-[#d9fdd3] text-[#111b21] dark:bg-[#005c4b] dark:text-[#e9edef] rounded-tr-none border-none" 
-                          : "bg-white dark:bg-[#202c33] text-[#111b21] dark:text-[#e9edef] rounded-tl-none border border-slate-100 dark:border-slate-800"
+                          ? "bg-gradient-to-br from-primary to-indigo-600 text-primary-foreground shadow-lg shadow-primary/20 rounded-tr-none border-none" 
+                          : "glass-card text-foreground rounded-tl-none"
                       )}>
                         {/* Message Content */}
                         <ChatMessageContent content={msg.text} role={msg.role === "user" ? "user" : "ai"} />
@@ -279,8 +279,8 @@ export default function ChatPage() {
 
                         {/* WhatsApp-style Timestamp inside Bubble */}
                         <div className={cn(
-                          "mt-1 flex items-center justify-end gap-1.5 opacity-70 text-[9px] font-bold uppercase",
-                          msg.role === "user" ? "text-[#667781] dark:text-[#8696a0]" : "text-slate-500"
+                          "mt-1 flex items-center justify-end gap-1.5 opacity-80 text-[9px] font-bold uppercase",
+                          msg.role === "user" ? "text-primary-foreground/80" : "text-muted-foreground"
                         )}>
                           {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           {msg.role === "user" && (

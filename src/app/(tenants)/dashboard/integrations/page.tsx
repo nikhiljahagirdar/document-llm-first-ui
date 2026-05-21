@@ -57,8 +57,8 @@ export default function IntegrationsPage() {
   const handleConnect = async () => {
     try {
       const response = await api.getGoogleAuthUrl()
-      if (response && response.auth_url) {
-        window.location.href = response.auth_url
+      if (response && response.url) {
+        window.location.href = response.url
       }
     } catch (err) {
       toast({

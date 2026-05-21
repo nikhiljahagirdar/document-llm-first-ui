@@ -65,30 +65,30 @@ export const DocumentChatDialog = React.memo(function DocumentChatDialog({
     await sendMessage(documentId, text)
   }
 
-  const handleExport = (format: "word" | "excel" | "pdf" | "csv") => {
+  const handleExport = async (format: "word" | "excel" | "pdf" | "csv") => {
     const cleanFilename = documentFilename.replace(/[^a-z0-9]/gi, '-').toLowerCase()
     const dateStr = new Date().toISOString().slice(0, 10)
     const filename = `chat-${cleanFilename}-${dateStr}`
 
     switch(format) {
       case "word":
-        exporter.exportToWord(chatMessages, `${filename}.doc`)
+        await exporter.exportToWord(chatMessages, `${filename}.doc`)
         break
       case "excel":
-        exporter.exportToExcel(chatMessages, `${filename}.xlsx`)
+        await exporter.exportToExcel(chatMessages, `${filename}.xlsx`)
         break
       case "csv":
-        exporter.exportToCSV(chatMessages, `${filename}.csv`)
+        await exporter.exportToCSV(chatMessages, `${filename}.csv`)
         break
       case "pdf":
-        exporter.exportToPDF(chatMessages, `${filename}.pdf`)
+        await exporter.exportToPDF(chatMessages, `${filename}.pdf`)
         break
     }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-3xl md:max-w-4xl border-border bg-card h-[85vh] flex flex-col p-0 shadow-2xl overflow-hidden">
+      <DialogContent className="max-w-4xl md:max-w-6xl border-border/50 glass-card h-[95vh] flex flex-col p-0 shadow-2xl overflow-hidden">
         {/* Header Section */}
         <DialogHeader className="p-5 border-b border-border/50 bg-muted/10 shrink-0">
           <div className="flex flex-row items-center justify-between pr-8">
@@ -104,12 +104,14 @@ export const DocumentChatDialog = React.memo(function DocumentChatDialog({
                   </span>
                 </div>
               </DialogTitle>
+              <DialogDescription className="sr-only">
+                Interactive chat dialog with the AI about the document.
+              </DialogDescription>
             </div>
 
-            {chatMessages.length > 0 && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 text-[10px] font-extrabold uppercase tracking-widest rounded-lg px-3 bg-background border-border/80 hover:bg-primary/5 gap-2 transition-all">
+                  <Button disabled={chatMessages.filter(m => m.role === 'ai').length === 0} variant="outline" size="sm" className="h-8 text-[10px] font-extrabold uppercase tracking-widest rounded-lg px-3 bg-background border-border/80 hover:bg-primary/5 gap-2 transition-all">
                     <FileDown className="h-3.5 w-3.5 text-primary" /> Export Transcript <ChevronDown className="h-3 w-3 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -130,7 +132,6 @@ export const DocumentChatDialog = React.memo(function DocumentChatDialog({
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
           </div>
         </DialogHeader>
 
@@ -162,10 +163,10 @@ export const DocumentChatDialog = React.memo(function DocumentChatDialog({
                       >
                         <div 
                           className={cn(
-                            "max-w-[85%] px-4 py-3.5 rounded-2xl shadow-sm relative ring-1 ring-border/5 transition-all",
+                            "max-w-[85%] px-4 py-3.5 rounded-2xl relative transition-all shadow-sm",
                             isAI 
-                              ? "bg-muted/30 text-foreground border border-border rounded-tl-sm" 
-                              : "bg-primary text-primary-foreground rounded-tr-sm"
+                              ? "glass-card text-foreground rounded-tl-none border-border/50" 
+                              : "bg-gradient-to-br from-primary to-indigo-600 text-primary-foreground shadow-lg shadow-primary/20 rounded-tr-none border-none"
                           )}
                         >
                           {isAI && (

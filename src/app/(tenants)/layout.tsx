@@ -64,11 +64,9 @@ export default function DashboardLayout({
 
       {/* Primary Viewport */}
       <div className="flex flex-col flex-1 min-w-0 h-full relative overflow-hidden">
-        {/* Modern Global Background Mesh - Extremely subtle for premium feel */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute top-[-10%] left-[-5%] w-[1000px] h-[1000px] bg-primary/5 dark:bg-primary/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen animate-pulse duration-[10s]" />
-          <div className="absolute bottom-[-10%] right-[-5%] w-[800px] h-[800px] bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] dark:opacity-[0.05] brightness-100 contrast-150" />
+        {/* Modern Global Background Mesh - Premium feel */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 mesh-gradient">
+          <div className="absolute inset-0 noise" />
         </div>
 
         <Header />

@@ -92,6 +92,23 @@ export default function BillingPage() {
     }
   }
 
+  const handlePurchaseAddon = async (addonType: string, quantity: number) => {
+    try {
+      const res = await api.createAddonCheckout({
+        addon_type: addonType,
+        quantity: quantity,
+        success_url: `${window.location.origin}/dashboard/billing?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${window.location.origin}/dashboard/billing`
+      })
+      if (res.checkout_url) {
+        window.location.href = res.checkout_url
+      }
+    } catch (err) {
+      console.error("Addon checkout failed:", err)
+      alert("Failed to initiate add-on checkout. Please try again.")
+    }
+  }
+
   const getMetric = (name: string) => usageSummary.find(u => u.metric_name.toLowerCase().includes(name.toLowerCase()))
 
   return (
@@ -209,6 +226,47 @@ export default function BillingPage() {
                 <Button variant="outline" onClick={() => handleSwitchPlan(activePlan?.plan_id || '')} className="w-full h-14 rounded-md border-2 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold tracking-normal text-xs">Update Payment Method</Button>
               </CardFooter>
             </Card>
+          </div>
+          <div className="space-y-6 mt-8">
+            <h2 className="text-2xl font-semibold tracking-tight text-card-foreground">Purchase Add-ons</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">Need more capacity? Purchase one-time add-ons that never expire.</p>
+            <div className="grid gap-6 md:grid-cols-3">
+              <Card className="p-6 flex flex-col space-y-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between items-center">
+                  <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-md text-indigo-600"><Zap className="h-5 w-5" /></div>
+                  <span className="font-bold text-lg">$10.00</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">100k AI Tokens</h3>
+                  <p className="text-xs text-slate-500">Boost your AI limit</p>
+                </div>
+                <Button variant="outline" onClick={() => handlePurchaseAddon('ai_limit', 1)} className="w-full mt-auto font-semibold hover:bg-indigo-50 hover:text-indigo-600 border-indigo-100 transition-colors">Purchase Add-on</Button>
+              </Card>
+
+              <Card className="p-6 flex flex-col space-y-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between items-center">
+                  <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-md text-indigo-600"><History className="h-5 w-5" /></div>
+                  <span className="font-bold text-lg">$5.00</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">100 OCR Pages</h3>
+                  <p className="text-xs text-slate-500">Process more documents</p>
+                </div>
+                <Button variant="outline" onClick={() => handlePurchaseAddon('ocr_pages', 100)} className="w-full mt-auto font-semibold hover:bg-indigo-50 hover:text-indigo-600 border-indigo-100 transition-colors">Purchase Add-on</Button>
+              </Card>
+
+              <Card className="p-6 flex flex-col space-y-4 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between items-center">
+                  <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-md text-indigo-600"><Globe className="h-5 w-5" /></div>
+                  <span className="font-bold text-lg">$5.00</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">5 GB Storage</h3>
+                  <p className="text-xs text-slate-500">Increase file storage</p>
+                </div>
+                <Button variant="outline" onClick={() => handlePurchaseAddon('storage_limit_mb', 5000)} className="w-full mt-auto font-semibold hover:bg-indigo-50 hover:text-indigo-600 border-indigo-100 transition-colors">Purchase Add-on</Button>
+              </Card>
+            </div>
           </div>
         </TabsContent>
 

@@ -1,10 +1,12 @@
 import * as XLSX from "xlsx"
 import { ChatMessage } from "./chat-store"
+import { marked } from "marked"
 
-export function exportToCSV(messages: ChatMessage[], filename: string = "chat-history.csv") {
-  const data = messages.map((msg, index) => ({
+export async function exportToCSV(messages: ChatMessage[], filename: string = "chat-history.csv") {
+  const aiMessages = messages.filter(msg => msg.role === "ai")
+  const data = aiMessages.map((msg, index) => ({
     No: index + 1,
-    Speaker: msg.role.toUpperCase(),
+    Speaker: "AI Agent",
     Message: msg.text.replace(/<\/?[^>]+(>|$)/g, ""), // strip html tags for csv
   }))
 
@@ -22,10 +24,11 @@ export function exportToCSV(messages: ChatMessage[], filename: string = "chat-hi
   document.body.removeChild(link)
 }
 
-export function exportToExcel(messages: ChatMessage[], filename: string = "chat-history.xlsx") {
-  const data = messages.map((msg, index) => ({
+export async function exportToExcel(messages: ChatMessage[], filename: string = "chat-history.xlsx") {
+  const aiMessages = messages.filter(msg => msg.role === "ai")
+  const data = aiMessages.map((msg, index) => ({
     "No": index + 1,
-    "Speaker": msg.role === "ai" ? "AI Agent" : "User",
+    "Speaker": "AI Agent",
     "Message": msg.text.replace(/<\/?[^>]+(>|$)/g, ""), // cleaner for excel
   }))
 
@@ -36,7 +39,8 @@ export function exportToExcel(messages: ChatMessage[], filename: string = "chat-
   XLSX.writeFile(wb, filename)
 }
 
-export function exportToWord(messages: ChatMessage[], filename: string = "chat-history.doc") {
+export async function exportToWord(messages: ChatMessage[], filename: string = "chat-history.doc") {
+  const aiMessages = messages.filter(msg => msg.role === "ai")
   let html = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' 
           xmlns:w='urn:schemas-microsoft-com:office:word' 
@@ -64,6 +68,10 @@ export function exportToWord(messages: ChatMessage[], filename: string = "chat-h
         table { border-collapse: collapse; width: 100%; margin: 15px 0; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
+        h1, h2, h3, h4 { color: #111827; }
+        pre { background: #f3f4f6; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        code { font-family: monospace; background: #f3f4f6; padding: 2px 4px; border-radius: 2px; }
+        ul, ol { margin: 0; padding-left: 20px; }
       </style>
     </head>
     <body>
@@ -73,16 +81,15 @@ export function exportToWord(messages: ChatMessage[], filename: string = "chat-h
       </div>
   `
 
-  messages.forEach(msg => {
-    const roleLabel = msg.role === "ai" ? "AI Intelligence" : "User Inquiry"
-    const cssClass = msg.role === "ai" ? "ai" : "user"
+  for (const msg of aiMessages) {
+    const formattedHtml = await marked.parse(msg.text)
     html += `
-      <div class="message ${cssClass}">
-        <div class="role">${roleLabel}</div>
-        <div class="content">${msg.text}</div>
+      <div class="message ai">
+        <div class="role">AI Intelligence</div>
+        <div class="content">${formattedHtml}</div>
       </div>
     `
-  })
+  }
 
   html += `</body></html>`
 
@@ -98,7 +105,8 @@ export function exportToWord(messages: ChatMessage[], filename: string = "chat-h
   URL.revokeObjectURL(url)
 }
 
-export function exportToPDF(messages: ChatMessage[], filename: string = "chat-history.pdf") {
+export async function exportToPDF(messages: ChatMessage[], filename: string = "chat-history.pdf") {
+  const aiMessages = messages.filter(msg => msg.role === "ai")
   // Trigger browser native print on a temporary element
   const printFrame = document.createElement("iframe")
   printFrame.style.position = "fixed"
@@ -130,6 +138,11 @@ export function exportToPDF(messages: ChatMessage[], filename: string = "chat-hi
         table { border-collapse: collapse; width: 100%; font-size: 11px; margin: 12px 0; }
         th, td { border: 1px solid #e5e7eb; padding: 6px 10px; text-align: left; }
         th { background-color: #f3f4f6; font-weight: 700; }
+        p { margin: 0 0 10px 0; }
+        pre { background: #1f2937; color: #f9fafb; padding: 10px; border-radius: 4px; overflow-x: auto; font-family: monospace; }
+        code { background: #f3f4f6; padding: 2px 4px; border-radius: 2px; font-family: monospace; color: #ef4444; }
+        pre code { background: transparent; color: inherit; padding: 0; }
+        ul, ol { margin: 0 0 10px 0; padding-left: 20px; }
       </style>
     </head>
     <body>
@@ -137,15 +150,15 @@ export function exportToPDF(messages: ChatMessage[], filename: string = "chat-hi
       <div class="meta">Session recorded on ${new Date().toLocaleString()}</div>
   `
 
-  messages.forEach(msg => {
-    const isAI = msg.role === "ai"
+  for (const msg of aiMessages) {
+    const formattedHtml = await marked.parse(msg.text)
     html += `
-      <div class="message-box ${isAI ? "ai-box" : ""}">
-        <div class="speaker">${isAI ? "AI Agent Analysis" : "User Question"}</div>
-        <div class="text">${msg.text}</div>
+      <div class="message-box ai-box">
+        <div class="speaker">AI Agent Analysis</div>
+        <div class="text">${formattedHtml}</div>
       </div>
     `
-  })
+  }
 
   html += `
       <script>

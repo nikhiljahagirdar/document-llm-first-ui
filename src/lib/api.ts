@@ -661,6 +661,13 @@ export const api = {
       method: "POST",
       body: JSON.stringify(data),
     }),
+  createAddonCheckout: (
+    data: { addon_type: string, quantity: number, success_url: string, cancel_url: string },
+  ): Promise<Types.CheckoutSessionResponse> =>
+    fetchAPI<Types.CheckoutSessionResponse>("/api/billing/checkout-addon", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
   // --- METERING ---
   getUsageMetering: (): Promise<Types.UsageSummary[]> =>
     fetchAPI<Types.UsageSummary[]>("/api/metering/summary"),

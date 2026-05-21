@@ -149,7 +149,7 @@ export function TenantAdminDashboard({
       <div className="grid gap-8 md:grid-cols-12 relative z-10">
         {/* Usage & Performance Area */}
         <motion.div variants={item} className="md:col-span-8">
-          <Card className="rounded-2xl border-border bg-card shadow-sm overflow-hidden flex flex-col h-full">
+          <Card className="rounded-2xl glass-card overflow-hidden flex flex-col h-full hover:shadow-2xl transition-all duration-500">
             <CardHeader className="p-6 pb-4 border-b border-border/50 flex flex-row items-center justify-between">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
@@ -223,7 +223,7 @@ export function TenantAdminDashboard({
 
         {/* Activity Feed Section */}
         <motion.div variants={item} className="md:col-span-4">
-          <Card className="rounded-2xl border-border bg-card shadow-sm overflow-hidden flex flex-col h-full">
+          <Card className="rounded-2xl glass-card overflow-hidden flex flex-col h-full hover:shadow-2xl transition-all duration-500">
             <CardHeader className="p-6 pb-4 border-b border-border/50">
               <div className="flex items-center gap-2.5 mb-1">
                 <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500 border border-indigo-500/10">
@@ -298,7 +298,7 @@ export function TenantAdminDashboard({
            ) : documents && documents.length > 0 ? (
              documents.slice(0, 4).map((doc: any) => (
                <Link key={doc.document_id} href={`/dashboard/documents/${doc.document_id}`}>
-                 <Card className="p-5 border-border bg-card hover:bg-accent/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer h-full flex flex-col justify-between rounded-xl">
+                 <Card className="p-5 glass-card hover:bg-white/40 dark:hover:bg-white/5 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group cursor-pointer h-full flex flex-col justify-between rounded-xl">
                    <div className="space-y-4">
                      <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary border border-primary/10">
                         <FileText className="h-5 w-5 stroke-[1.5px]" />
@@ -341,7 +341,7 @@ function StatCard({ title, value, sub, trend, icon, loading, color }: any) {
   }
 
   return (
-    <Card className="rounded-xl border-border bg-card shadow-sm p-5 space-y-4 relative overflow-hidden transition-all hover:shadow-md duration-300">
+    <Card className="rounded-xl glass-card p-5 space-y-4 relative overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-1 duration-300">
       <div className="flex items-center justify-between">
         <div className={cn("w-10 h-10 flex items-center justify-center rounded-lg border shadow-sm", colorMap[color])}>
           {React.cloneElement(icon, { className: "h-5 w-5 stroke-[2px]" })}

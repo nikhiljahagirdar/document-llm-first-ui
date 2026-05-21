@@ -134,13 +134,10 @@ const initialValue: Descendant[] = [
 
 const COLORS = [
   { name: 'Default', value: 'inherit' },
-  { name: 'Primary', value: 'hsl(var(--primary))' },
-  { name: 'Indigo', value: '#4f46e5' },
-  { name: 'Blue', value: '#2563eb' },
-  { name: 'Rose', value: '#e11d48' },
-  { name: 'Emerald', value: '#059669' },
-  { name: 'Amber', value: '#d97706' },
-  { name: 'Slate', value: '#475569' },
+  { name: 'Red', value: '#ef4444' },
+  { name: 'Yellow', value: '#eab308' },
+  { name: 'Green', value: '#22c55e' },
+  { name: 'Blue', value: '#3b82f6' },
   { name: 'White', value: '#ffffff' },
   { name: 'Black', value: '#000000' },
 ]
@@ -669,10 +666,6 @@ export function TemplateBuilder({
               </div>
             </div>
             <div className="flex items-center gap-3">
-               <div className="flex items-center gap-1 bg-background p-1 rounded-xl border border-border shadow-sm mr-4">
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" onClick={() => editor.undo()} disabled={editor.history.undos.length === 0}><Undo2 className="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" onClick={() => editor.redo()} disabled={editor.history.redos.length === 0}><Redo2 className="h-4 w-4" /></Button>
-               </div>
                <Button variant="ghost" size="sm" className="h-10 px-4 text-[10px] font-extrabold uppercase tracking-widest gap-2 rounded-xl" onClick={() => setPreviewMode(!previewMode)}>
                  {previewMode ? <Code2 className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                  {previewMode ? "Editor" : "Visualise"}
@@ -688,18 +681,23 @@ export function TemplateBuilder({
         {/* Slate Enhanced Toolbar */}
         {!previewMode && (
           <div className="px-6 py-4 border-b border-border bg-muted/10 flex flex-wrap items-center gap-4 sticky top-0 z-30 backdrop-blur-md">
-            <div className="flex items-center gap-1.5 bg-background p-1.5 rounded-2xl border border-border shadow-sm ring-1 ring-border/5">
+            <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" onClick={() => editor.undo()} disabled={editor.history.undos.length === 0}><Undo2 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground" onClick={() => editor.redo()} disabled={editor.history.redos.length === 0}><Redo2 className="h-4 w-4" /></Button>
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-background p-1 rounded-lg border border-border">
               <HeadingDropdown editor={editor} />
             </div>
 
-            <div className="flex items-center gap-1 bg-background p-1.5 rounded-2xl border border-border shadow-sm ring-1 ring-border/5">
+            <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border">
               <ToolbarButton editor={editor} format="bold" icon={<Bold className="h-4 w-4" />} />
               <ToolbarButton editor={editor} format="italic" icon={<Italic className="h-4 w-4" />} />
               <ToolbarButton editor={editor} format="underline" icon={<Underline className="h-4 w-4" />} />
               <ToolbarButton editor={editor} format="strikethrough" icon={<Strikethrough className="h-4 w-4" />} />
             </div>
 
-            <div className="flex items-center gap-1 bg-background p-1.5 rounded-2xl border border-border shadow-sm ring-1 ring-border/5">
+            <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border">
               <ToolbarButton editor={editor} format="numbered-list" icon={<ListOrdered className="h-4 w-4" />} isBlock />
               <ToolbarButton editor={editor} format="bulleted-list" icon={<List className="h-4 w-4" />} isBlock />
               <ToolbarButton editor={editor} format="block-quote" icon={<Quote className="h-4 w-4" />} isBlock />
@@ -715,18 +713,18 @@ export function TemplateBuilder({
               </Button>
             </div>
 
-            <div className="flex items-center gap-1 bg-background p-1.5 rounded-2xl border border-border shadow-sm ring-1 ring-border/5">
+            <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border">
               <ColorPicker editor={editor} type="color" icon={<Type className="h-4 w-4" />} />
               <ColorPicker editor={editor} type="backgroundColor" icon={<Palette className="h-4 w-4" />} />
             </div>
 
-            <div className="flex items-center gap-1 bg-background p-1.5 rounded-2xl border border-border shadow-sm ring-1 ring-border/5">
+            <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border">
               <AlignButton editor={editor} align="left" icon={<AlignLeft className="h-4 w-4" />} />
               <AlignButton editor={editor} align="center" icon={<AlignCenter className="h-4 w-4" />} />
               <AlignButton editor={editor} align="right" icon={<AlignRight className="h-4 w-4" />} />
             </div>
 
-            <div className="flex items-center gap-1 bg-background p-1.5 rounded-2xl border border-border shadow-sm ring-1 ring-border/5">
+            <div className="flex items-center gap-1 bg-background p-1 rounded-lg border border-border">
               <LinkButton editor={editor} />
               <ImageButton editor={editor} onUploadClick={() => imageInputRef.current?.click()} />
               <input 
@@ -778,15 +776,15 @@ export function TemplateBuilder({
           </div>
         )}
 
-        <CardContent className="flex-1 p-0 flex flex-col min-h-0 bg-accent/5">
+        <CardContent className="flex-1 p-0 flex flex-col min-h-0 bg-muted/40">
           <Slate editor={editor} initialValue={value} onChange={setValue}>
             <ScrollArea className="flex-1">
-              <div className="max-w-5xl mx-auto p-4 md:p-12 min-h-full">
-                <div className="bg-card shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] rounded-2xl border border-border p-8 md:px-20 md:py-24 relative min-h-[1000px]">
+              <div className="max-w-5xl mx-auto p-4 md:py-8 min-h-full flex justify-center">
+                <div className="bg-white dark:bg-slate-950 shadow-md border border-border/50 w-full p-8 md:px-[96px] md:py-[96px] relative min-h-[1100px] ring-1 ring-border/5">
                   <Editable
                     renderElement={renderElement}
                     renderLeaf={renderLeaf}
-                    placeholder="Initialise document deconstruction..."
+                    placeholder="Start typing..."
                     spellCheck
                     autoFocus
                     readOnly={previewMode}
