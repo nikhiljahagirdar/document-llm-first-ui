@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { api } from '@/lib/api'
+import * as Types from '@/types/api'
 
 export const metadata: Metadata = {
   title: 'DocuFlow AI - Enterprise RAG & AI Document Automation Platform',
@@ -97,10 +99,34 @@ export default async function LandingPage() {
       desc: 'Contracts, onboarding, automation workflows',
       color: 'from-sky-400 to-blue-500',
     },
+    {
+      title: 'Real Estate',
+      icon: '🏢',
+      desc: 'Property deeds, lease agreements, closing forms',
+      color: 'from-amber-400 to-orange-500',
+    },
+    {
+      title: 'Education',
+      icon: '🎓',
+      desc: 'Student transcripts, reports, lesson plans',
+      color: 'from-red-400 to-pink-500',
+    },
+    {
+      title: 'E-commerce',
+      icon: '🛒',
+      desc: 'Invoices, receipts, shipping docs, custom manifests',
+      color: 'from-teal-400 to-cyan-500',
+    },
+    {
+      title: 'Logistics',
+      icon: '📦',
+      desc: 'Bills of lading, delivery logs, route audits',
+      color: 'from-indigo-400 to-blue-500',
+    },
   ]
 
-  let apiPlans: any[] = []
-  let apiIndustries: any[] = []
+  let apiPlans: Types.PlanResponse[] = []
+  let apiIndustries: Types.IndustryResponse[] = []
 
   try {
     apiPlans = await api.getPlans()
@@ -124,7 +150,7 @@ export default async function LandingPage() {
   ]
 
   const plans = (apiPlans && apiPlans.length > 0)
-    ? apiPlans.map((plan) => {
+    ? apiPlans.map((plan: Types.PlanResponse) => {
         const hasPrice = typeof plan.price === 'number'
         const rawFeatures = plan.limits
           ? Object.entries(plan.limits).map(([key, val]) => {
@@ -150,7 +176,7 @@ export default async function LandingPage() {
     : defaultPlans
 
   const industries = (apiIndustries && apiIndustries.length > 0)
-    ? apiIndustries.map((ind, index) => ({
+    ? apiIndustries.map((ind: Types.IndustryResponse, index) => ({
         title: ind.name,
         icon: ind.icon || '📂',
         desc: ind.description || 'Custom industry templates and AI automation workflows.',
@@ -205,9 +231,14 @@ export default async function LandingPage() {
               <a href="#pricing" className="hover:text-white transition">Pricing</a>
             </nav>
 
-            <button className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#7B2FF7] via-[#A855F7] to-[#00C6FF] font-semibold shadow-lg shadow-violet-500/30 hover:scale-105 transition-transform">
-              Book Demo
-            </button>
+            <div className="flex items-center gap-6">
+              <Link href="/login" className="hidden sm:inline-block text-sm font-semibold text-gray-300 hover:text-white transition">
+                Sign In
+              </Link>
+              <Link href="/register" className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#7B2FF7] via-[#A855F7] to-[#00C6FF] font-semibold shadow-lg shadow-violet-500/30 hover:scale-105 transition-transform text-white text-center">
+                Book Demo
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -234,13 +265,13 @@ export default async function LandingPage() {
               </p>
 
               <div className="flex flex-wrap gap-5 mt-10">
-                <button className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] font-semibold text-lg shadow-2xl shadow-fuchsia-500/30 hover:scale-105 transition-transform">
+                <Link href="/register" className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] font-semibold text-lg shadow-2xl shadow-fuchsia-500/30 hover:scale-105 transition-transform text-white text-center">
                   Start Free Trial
-                </button>
+                </Link>
 
-                <button className="px-8 py-4 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-xl font-semibold text-lg hover:bg-white/10 transition">
+                <Link href="#industries" className="px-8 py-4 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-xl font-semibold text-lg hover:bg-white/10 transition text-white text-center">
                   Explore Templates
-                </button>
+                </Link>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-12">
@@ -356,8 +387,8 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <section id="industries" className="max-w-7xl mx-auto px-6 pb-32">
-          <div className="text-center max-w-3xl mx-auto">
+        <section id="industries" className="w-full overflow-hidden pb-32">
+          <div className="max-w-7xl mx-auto px-6 text-center">
             <div className="inline-flex px-5 py-2 rounded-full bg-white/[0.06] border border-white/[0.08] text-violet-300 text-sm backdrop-blur-xl">
               INDUSTRY READY
             </div>
@@ -369,32 +400,50 @@ export default async function LandingPage() {
               </span>
             </h2>
 
-            <p className="mt-6 text-xl text-gray-400 leading-relaxed">
+            <p className="mt-6 text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
               Reusable AI-powered templates designed for compliance-heavy and data-driven industries.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
-            {industries.map((industry) => (
-              <div
-                key={industry.title}
-                className="group rounded-[32px] border border-white/[0.08] bg-white/[0.06] p-8 backdrop-blur-xl hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/20"
-              >
-                <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${industry.color} flex items-center justify-center text-4xl shadow-xl`}>
-                  {industry.icon}
+          <div className="relative mt-20 w-full overflow-hidden">
+            {/* Soft faded edges for depth */}
+            <div className="absolute top-0 bottom-0 left-0 w-32 bg-gradient-to-r from-[#070B1A] to-transparent z-20 pointer-events-none" />
+            <div className="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-[#070B1A] to-transparent z-20 pointer-events-none" />
+
+            <div className="flex gap-8 w-max animate-marquee-row hover:[animation-play-state:paused]">
+              {[...industries, ...industries, ...industries].map((industry, index) => (
+                <div
+                  key={`${industry.title}-${index}`}
+                  className="w-[350px] shrink-0 group rounded-[32px] border border-white/[0.08] bg-white/[0.06] p-8 backdrop-blur-xl hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/20"
+                >
+                  <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${industry.color} flex items-center justify-center text-4xl shadow-xl`}>
+                    {industry.icon}
+                  </div>
+
+                  <h3 className="mt-8 text-2xl font-bold">{industry.title}</h3>
+
+                  <p className="mt-4 text-gray-400 leading-relaxed min-h-[72px]">
+                    {industry.desc}
+                  </p>
+
+                  <Link href="/register" className="mt-8 text-fuchsia-400 font-semibold group-hover:translate-x-2 transition-transform inline-block">
+                    View Templates →
+                  </Link>
                 </div>
+              ))}
+            </div>
 
-                <h3 className="mt-8 text-2xl font-bold">{industry.title}</h3>
-
-                <p className="mt-4 text-gray-400 leading-relaxed">
-                  {industry.desc}
-                </p>
-
-                <button className="mt-8 text-fuchsia-400 font-semibold group-hover:translate-x-2 transition-transform">
-                  View Templates →
-                </button>
-              </div>
-            ))}
+            <style>{`
+              @keyframes marquee {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-33.333%, 0, 0); }
+              }
+              .animate-marquee-row {
+                display: flex;
+                width: max-content;
+                animation: marquee 50s linear infinite;
+              }
+            `}</style>
           </div>
         </section>
 
@@ -457,38 +506,40 @@ export default async function LandingPage() {
                     : 'bg-white/10'
                 }`}
               >
-                <div className="rounded-[36px] bg-[#0C1124] p-10 h-full">
-                  {plan.featured && (
-                    <div className="inline-flex px-4 py-2 rounded-full bg-fuchsia-500/20 border border-fuchsia-400/20 text-fuchsia-300 text-sm mb-6">
-                      Most Popular
-                    </div>
-                  )}
-
-                  <h3 className="text-3xl font-bold">{plan.name}</h3>
-
-                  <div className="mt-6 text-6xl font-black">
-                    {plan.price}
-                    {plan.price !== 'Custom' && plan.price !== 'Free' && (
-                      <span className="text-xl text-gray-400">/mo</span>
-                    )}
-                  </div>
-
-                  <div className="space-y-5 mt-10">
-                    {plan.features.map((feature) => (
-                      <div key={feature} className="flex items-center gap-3 text-gray-300">
-                        <div className="w-2 h-2 rounded-full bg-fuchsia-400" />
-                        {feature}
+                <div className="rounded-[36px] bg-[#0C1124] p-10 h-full flex flex-col justify-between">
+                  <div>
+                    {plan.featured && (
+                      <div className="inline-flex px-4 py-2 rounded-full bg-fuchsia-500/20 border border-fuchsia-400/20 text-fuchsia-300 text-sm mb-6">
+                        Most Popular
                       </div>
-                    ))}
+                    )}
+
+                    <h3 className="text-3xl font-bold">{plan.name}</h3>
+
+                    <div className="mt-6 text-6xl font-black">
+                      {plan.price}
+                      {plan.price !== 'Custom' && plan.price !== 'Free' && (
+                        <span className="text-xl text-gray-400">/mo</span>
+                      )}
+                    </div>
+
+                    <div className="space-y-5 mt-10">
+                      {plan.features.map((feature) => (
+                        <div key={feature} className="flex items-center gap-3 text-gray-300">
+                          <div className="w-2 h-2 rounded-full bg-fuchsia-400" />
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
-                  <button className={`w-full mt-12 py-4 rounded-2xl font-semibold text-lg transition-transform hover:scale-105 ${
+                  <Link href="/register" className={`w-full text-center block mt-12 py-4 rounded-2xl font-semibold text-lg transition-transform hover:scale-105 ${
                     plan.featured
-                      ? 'bg-gradient-to-r from-fuchsia-500 to-cyan-500'
-                      : 'bg-white/10 border border-white/[0.08]'
+                      ? 'bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-white font-bold'
+                      : 'bg-white/10 border border-white/[0.08] text-white hover:bg-white/20'
                   }`}>
                     Get Started
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -511,13 +562,13 @@ export default async function LandingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-5">
-                <button className="px-8 py-5 rounded-2xl bg-white text-black font-bold text-lg hover:scale-105 transition-transform">
+                <Link href="/register" className="px-8 py-5 rounded-2xl bg-white text-black font-bold text-lg hover:scale-105 transition-transform text-center">
                   Start Free Trial
-                </button>
+                </Link>
 
-                <button className="px-8 py-5 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl font-bold text-lg hover:bg-white/20 transition">
+                <Link href="/login" className="px-8 py-5 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl font-bold text-lg hover:bg-white/20 transition text-center text-white">
                   Schedule Demo
-                </button>
+                </Link>
               </div>
             </div>
           </div>
