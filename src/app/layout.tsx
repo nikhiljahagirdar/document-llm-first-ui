@@ -14,13 +14,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SaaS Document Intelligence",
-  description: "Multi-tenant AI-powered document intelligence platform.",
+  title: "DocuFlow AI",
+  description: "Enterprise RAG & AI Document Automation Platform",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "DocIntel",
+    title: "DocuFlow AI",
   },
 };
 
