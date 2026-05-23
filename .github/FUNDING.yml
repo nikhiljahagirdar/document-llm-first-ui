@@ -1,10 +1,10 @@
 # These are supported funding model platforms
 
-github: [nikhiljahagirdar]
+github: nikhiljahagirdar
 ko_fi: nikhiljahagirdar
 tidelift: # platform/package-name e.g., npm/babel
 community_bridge: # username
 liberapay: # username
 issuehunt: # username
-lfx_crowdfunding: # username
+lfx_crowdfunding: # nikhiljahagirdar
 custom: # ['https://www.paypal.me/username', 'https://buy.stripe.com/...']
