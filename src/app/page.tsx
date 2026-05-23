@@ -1,5 +1,78 @@
-export default function LandingPage() {
-  const industries = [
+import { Metadata } from 'next'
+import { api } from '@/lib/api'
+
+export const metadata: Metadata = {
+  title: 'DocuFlow AI - Enterprise RAG & AI Document Automation Platform',
+  description: 'Automate enterprise document generation with intelligent RAG workflows, smart industry-ready templates, and secure AI data injection. Try DocuFlow AI for free.',
+  keywords: [
+    'AI document generator',
+    'RAG document automation',
+    'enterprise document AI',
+    'automated contract generation',
+    'smart templates automation',
+    'legal tech AI',
+    'finance document automation',
+    'secure AI document generation',
+    'DocuFlow AI'
+  ],
+  openGraph: {
+    title: 'DocuFlow AI - Enterprise RAG & AI Document Automation',
+    description: 'Automate enterprise document generation with intelligent RAG workflows, smart industry-ready templates, and secure AI data injection.',
+    url: 'https://docuflow.ai',
+    siteName: 'DocuFlow AI',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: 'https://docuflow.ai/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'DocuFlow AI - Enterprise Document Automation',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'DocuFlow AI - Enterprise RAG & AI Document Automation',
+    description: 'Automate enterprise document generation with intelligent RAG workflows, smart industry-ready templates, and secure AI data injection.',
+    images: ['https://docuflow.ai/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
+
+export default async function LandingPage() {
+  const defaultPlans = [
+    {
+      name: 'Starter',
+      price: '$29',
+      featured: false,
+      features: ['50 AI Documents', 'Basic RAG', '5 Templates'],
+    },
+    {
+      name: 'Growth',
+      price: '$99',
+      featured: true,
+      features: ['Unlimited Docs', 'Advanced RAG', 'API Integrations'],
+    },
+    {
+      name: 'Enterprise',
+      price: 'Custom',
+      featured: false,
+      features: ['Dedicated Infra', 'SSO & Security', 'Priority Support'],
+    },
+  ]
+
+  const defaultIndustries = [
     {
       title: 'Legal Services',
       icon: '⚖️',
@@ -25,6 +98,65 @@ export default function LandingPage() {
       color: 'from-sky-400 to-blue-500',
     },
   ]
+
+  let apiPlans: any[] = []
+  let apiIndustries: any[] = []
+
+  try {
+    apiPlans = await api.getPlans()
+  } catch (error) {
+    console.error('Failed to fetch pricing plans from API:', error)
+  }
+
+  try {
+    apiIndustries = await api.getIndustries()
+  } catch (error) {
+    console.error('Failed to fetch industries from API:', error)
+  }
+
+  const gradientColors = [
+    'from-violet-500 to-fuchsia-500',
+    'from-emerald-400 to-teal-500',
+    'from-pink-400 to-rose-500',
+    'from-sky-400 to-blue-500',
+    'from-amber-400 to-orange-500',
+    'from-indigo-400 to-violet-500',
+  ]
+
+  const plans = (apiPlans && apiPlans.length > 0)
+    ? apiPlans.map((plan) => {
+        const hasPrice = typeof plan.price === 'number'
+        const rawFeatures = plan.limits
+          ? Object.entries(plan.limits).map(([key, val]) => {
+              const cleanKey = key.replace(/_/g, ' ')
+              const cleanVal = val === null || val === -1 ? 'Unlimited' : val
+              return `${cleanVal} ${cleanKey}`
+            })
+          : []
+        
+        return {
+          name: plan.name,
+          price: !hasPrice || plan.price === 0
+            ? 'Free'
+            : plan.price > 1000
+              ? 'Custom'
+              : `$${plan.price}`,
+          featured: plan.price > 50 && plan.price < 500,
+          features: rawFeatures.length > 0
+            ? rawFeatures
+            : ['AI Document Generation', 'RAG Retrieval', 'Standard Templates'],
+        }
+      })
+    : defaultPlans
+
+  const industries = (apiIndustries && apiIndustries.length > 0)
+    ? apiIndustries.map((ind, index) => ({
+        title: ind.name,
+        icon: ind.icon || '📂',
+        desc: ind.description || 'Custom industry templates and AI automation workflows.',
+        color: gradientColors[index % gradientColors.length],
+      }))
+    : defaultIndustries
 
   const steps = [
     {
@@ -61,7 +193,7 @@ export default function LandingPage() {
                 D
               </div>
               <div>
-                <h1 className="font-bold text-2xl">DocuFlow AI</h1>
+                <span className="block font-bold text-2xl">DocuFlow AI</span>
                 <p className="text-xs text-gray-400">Enterprise RAG Automation</p>
               </div>
             </div>
@@ -86,7 +218,7 @@ export default function LandingPage() {
                 ✨ AI Powered Document Generation
               </div>
 
-              <h2 className="text-6xl md:text-7xl font-black leading-tight tracking-tight">
+              <h1 className="text-6xl md:text-7xl font-black leading-tight tracking-tight">
                 Create.
                 <br />
                 Complete.
@@ -94,7 +226,7 @@ export default function LandingPage() {
                 <span className="bg-gradient-to-r from-[#FF4FD8] via-[#A855F7] to-[#38BDF8] bg-clip-text text-transparent">
                   Automate.
                 </span>
-              </h2>
+              </h1>
 
               <p className="mt-8 text-xl text-gray-300 leading-relaxed max-w-xl">
                 Industry-specific RAG templates + intelligent AI data injection
@@ -180,7 +312,7 @@ export default function LandingPage() {
 
                       <div>
                         <p className="text-gray-400">Jurisdiction</p>
-                        <p className="font-medium mt-1">Dubai, UAE</p>
+                        <p className="font-medium mt-1">Delaware, USA</p>
                       </div>
 
                       <div>
@@ -316,24 +448,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 mt-20">
-            {[
-              {
-                name: 'Starter',
-                price: '$29',
-                features: ['50 AI Documents', 'Basic RAG', '5 Templates'],
-              },
-              {
-                name: 'Growth',
-                price: '$99',
-                featured: true,
-                features: ['Unlimited Docs', 'Advanced RAG', 'API Integrations'],
-              },
-              {
-                name: 'Enterprise',
-                price: 'Custom',
-                features: ['Dedicated Infra', 'SSO & Security', 'Priority Support'],
-              },
-            ].map((plan) => (
+            {plans.map((plan) => (
               <div
                 key={plan.name}
                 className={`rounded-[36px] p-[1px] ${
@@ -353,7 +468,7 @@ export default function LandingPage() {
 
                   <div className="mt-6 text-6xl font-black">
                     {plan.price}
-                    {plan.price !== 'Custom' && (
+                    {plan.price !== 'Custom' && plan.price !== 'Free' && (
                       <span className="text-xl text-gray-400">/mo</span>
                     )}
                   </div>
